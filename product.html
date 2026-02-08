@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-logo"><div class="brand-logo-inner">Z</div></div>
+        <div class="brand-text"><div class="brand-name">ZHAN</div><div class="brand-tagline">Premium Online Wardrobe</div></div>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-link" onclick="window.location.href='index.html'">Home</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Shop</div>
+        <div class="nav-link" onclick="window.location.href='about.html'">About</div>
+        <button class="cart-button" id="openCartBtn"><span>Cart</span><span class="cart-count" id="cartCount">0</span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="product-detail">
+    <div class="container">
+      <div class="product-grid-detail">
+        <div class="product-media">
+          <div class="product-image-large" id="productImage">Z</div>
+        </div>
+        <div class="product-meta-panel">
+          <h1 id="productName"></h1>
+          <div id="productTag" class="product-tag-small"></div>
+          <div id="productPrice" class="product-price-large"></div>
+          <p id="productDesc"></p>
+
+          <div class="size-qty-row">
+            <div id="sizeContainer"></div>
+            <div class="qty-box">
+              <label>Quantity</label>
+              <input type="number" id="productQty" min="1" value="1" />
+            </div>
+          </div>
+
+          <div class="product-actions">
+            <button id="btnAddToCart" class="btn-primary">Add to cart</button>
+            <a id="btnBuyNow" class="btn-primary" href="#">Buy now</a>
+          </div>
+
+          <div class="rating-row">
+            <div id="avgRating">No ratings yet</div>
+            <div class="rate-input">
+              <label>Rate:</label>
+              <div class="star-rating" id="starRating">
+                <button class="star" data-value="1">★</button>
+                <button class="star" data-value="2">★</button>
+                <button class="star" data-value="3">★</button>
+                <button class="star" data-value="4">★</button>
+                <button class="star" data-value="5">★</button>
+              </div>
+              <button id="btnSubmitRating">Submit</button>
+            </div>
+          </div>
+
+          <div class="comments-section">
+            <h3>Comments</h3>
+            <div id="commentsList"></div>
+            <input id="commentName" placeholder="Your name (optional)" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,0.12);margin-top:8px;" />
+            <textarea id="commentText" placeholder="Write a comment"></textarea>
+            <button id="btnAddComment">Post comment</button>
+          </div>
+
+        </div>
+      </div>
+
+      <section class="related-section">
+        <h3>Related items</h3>
+        <div class="product-grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    © <span id="year"></span> ZHAN
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const url = new URL(window.location.href);
+    const id = Number(url.searchParams.get('id')) || null;
+    if (!id) {
+      document.body.innerHTML = '<p>Product not found</p>';
+    }
+
+    // find product
+    const product = products.find(p => p.id === id);
+    if (!product) {
+      document.body.innerHTML = '<p>Product not found</p>';
+    }
+
+    document.getElementById('productName').textContent = product.name;
+    document.getElementById('productTag').textContent = product.tag;
+    document.getElementById('productDesc').textContent = product.description;
+    document.getElementById('productImage').innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image-large-img" data-id="${product.id}">`;
+    document.getElementById('productPrice').innerHTML = `<strong>${formatSAR(product.price)}</strong> <span class="price-old">${formatSAR(product.oldPrice)}</span>`;
+
+    // sizes -> render fluffy pills instead of select
+    const sizeContainer = document.getElementById('sizeContainer');
+    if (Array.isArray(product.sizes) && product.sizes.length) {
+      const label = document.createElement('label'); label.textContent = 'Size';
+      sizeContainer.appendChild(label);
+      const pills = document.createElement('div'); pills.className = 'size-pills'; pills.setAttribute('data-id', product.id);
+      product.sizes.forEach(s => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'size-pill'; b.setAttribute('data-size', s); b.textContent = s;
+        pills.appendChild(b);
+      });
+      sizeContainer.appendChild(pills);
+
+      // pill click behavior
+      pills.querySelectorAll('.size-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pills.querySelectorAll('.size-pill').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+
+    // colors (render swatches)
+    if (Array.isArray(product.colors) && product.colors.length) {
+      const colorLabel = document.createElement('label'); colorLabel.textContent = 'Color';
+      sizeContainer.appendChild(colorLabel);
+      const cs = document.createElement('div'); cs.className = 'color-swatches'; cs.setAttribute('data-id', product.id);
+      product.colors.forEach(c => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'color-swatch'; b.setAttribute('data-color', c.value); b.title = c.name; b.style.background = c.value;
+        cs.appendChild(b);
+      });
+      sizeContainer.appendChild(cs);
+
+      cs.querySelectorAll('.color-swatch').forEach(btn => {
+        btn.addEventListener('click', () => {
+          cs.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+
+    // designs (render pills)
+    if (Array.isArray(product.designs) && product.designs.length) {
+      const designLabel = document.createElement('label'); designLabel.textContent = 'Design';
+      sizeContainer.appendChild(designLabel);
+      const dp = document.createElement('div'); dp.className = 'design-pills'; dp.setAttribute('data-id', product.id);
+      product.designs.forEach(d => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'design-pill'; b.setAttribute('data-design', d); b.textContent = d;
+        dp.appendChild(b);
+      });
+      sizeContainer.appendChild(dp);
+
+      dp.querySelectorAll('.design-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          dp.querySelectorAll('.design-pill').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+      });
+    }
+
+    // related items
+    const relatedGrid = document.getElementById('relatedGrid');
+    const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0,4);
+    related.forEach(r => {
+      relatedGrid.innerHTML += `
+        <div class="product-card">
+          <div class="product-tag">${r.tag}</div>
+          <div class="product-image"><img src="${r.image}" class="product-thumb" data-id="${r.id}" alt="${r.name}"></div>
+          <div class="product-info">
+            <a class="product-name" href="product.html?id=${r.id}" style="text-decoration:none;color:inherit;">${r.name}</a>
+            <div class="product-price">${formatSAR(r.price)}</div>
+            <a class="btn-view" href="product.html?id=${r.id}">View</a>
+          </div>
+        </div>
+      `;
+    });
+
+    // attach thumbnail handlers for related items and main image
+    document.querySelectorAll('.product-thumb').forEach(img => {
+      img.addEventListener('click', () => {
+        const id = Number(img.getAttribute('data-id'));
+        try { window.currentGallery = related.map(p => p.id); } catch (e) { window.currentGallery = products.map(p => p.id); }
+        if (typeof openLightboxById === 'function') openLightboxById(id);
+      });
+    });
+    const mainImg = document.querySelector('.product-image-large-img');
+    if (mainImg) {
+      mainImg.addEventListener('click', () => {
+        const id = Number(mainImg.getAttribute('data-id'));
+        try { window.currentGallery = [product.id].concat(related.map(p => p.id)); } catch (e) { window.currentGallery = products.map(p => p.id); }
+        if (typeof openLightboxById === 'function') openLightboxById(id);
+      });
+    }
+
+    // comments (localStorage)
+    const commentsKey = `comments_product_${product.id}`;
+    function loadComments() {
+      const raw = localStorage.getItem(commentsKey);
+      const list = raw ? JSON.parse(raw) : [];
+      const el = document.getElementById('commentsList');
+      el.innerHTML = '';
+      list.forEach(c => {
+        el.innerHTML += `<div class="comment"><div class="comment-meta"><strong>${c.name || 'User'}</strong> <span class="comment-date">${new Date(c.ts).toLocaleString()}</span></div><div class="comment-body">${c.text}</div></div>`;
+      });
+    }
+    loadComments();
+
+    document.getElementById('btnAddComment').addEventListener('click', () => {
+      const text = document.getElementById('commentText').value.trim();
+      const name = document.getElementById('commentName').value.trim();
+      if (!text) return alert('Please write a comment');
+      const raw = localStorage.getItem(commentsKey);
+      const list = raw ? JSON.parse(raw) : [];
+      list.unshift({ text, ts: Date.now(), name: name || null });
+      localStorage.setItem(commentsKey, JSON.stringify(list));
+      document.getElementById('commentText').value = '';
+      document.getElementById('commentName').value = '';
+      loadComments();
+    });
+
+    // ratings (star-based)
+    const ratingKey = `ratings_product_${product.id}`;
+    function loadRating() {
+      const raw = localStorage.getItem(ratingKey);
+      const list = raw ? JSON.parse(raw) : [];
+      if (list.length === 0) {
+        document.getElementById('avgRating').textContent = 'No ratings yet';
+      } else {
+        const avg = (list.reduce((s,v)=>s+v,0)/list.length).toFixed(1);
+        document.getElementById('avgRating').textContent = `Average rating: ${avg} / 5 (${list.length} reviews)`;
+      }
+    }
+    loadRating();
+
+    // star selection behavior
+    let selectedStar = 0;
+    const stars = document.querySelectorAll('#starRating .star');
+    stars.forEach((st) => {
+      st.addEventListener('click', () => {
+        selectedStar = Number(st.getAttribute('data-value'));
+        stars.forEach(s => {
+          s.classList.toggle('selected', Number(s.getAttribute('data-value')) <= selectedStar);
+        });
+      });
+      st.addEventListener('mouseover', () => {
+        const v = Number(st.getAttribute('data-value'));
+        stars.forEach(s => s.classList.toggle('active', Number(s.getAttribute('data-value')) <= v));
+      });
+      st.addEventListener('mouseout', () => {
+        stars.forEach(s => s.classList.remove('active'));
+      });
+    });
+
+    document.getElementById('btnSubmitRating').addEventListener('click', () => {
+      if (selectedStar <= 0) return alert('Please select star rating');
+      const raw = localStorage.getItem(ratingKey);
+      const list = raw ? JSON.parse(raw) : [];
+      list.push(selectedStar);
+      localStorage.setItem(ratingKey, JSON.stringify(list));
+      loadRating();
+      alert('Thanks for rating!');
+      // clear selection
+      selectedStar = 0; stars.forEach(s => s.classList.remove('selected'));
+    });
+
+    // add to cart from product page
+    document.getElementById('btnAddToCart').addEventListener('click', () => {
+      const qty = Number(document.getElementById('productQty').value) || 1;
+      // Check for selected size pill (if used)
+      let size = null;
+      const pillContainer = document.querySelector(`.size-pills[data-id="${product.id}"]`);
+      if (pillContainer) {
+        const sel = pillContainer.querySelector('.size-pill.selected');
+        if (sel) size = sel.getAttribute('data-size');
+      }
+      // Fallback: element with id detailSize (legacy)
+      const sizeSel = document.getElementById('detailSize');
+      if (!size && sizeSel) size = sizeSel.value || null;
+
+      // read selected color/design
+      const colorContainer = document.querySelector(`.color-swatches[data-id="${product.id}"]`);
+      const designContainer = document.querySelector(`.design-pills[data-id="${product.id}"]`);
+      const colorSel = colorContainer ? colorContainer.querySelector('.color-swatch.selected') : null;
+      const designSel = designContainer ? designContainer.querySelector('.design-pill.selected') : null;
+      const color = colorSel ? colorSel.getAttribute('data-color') : null;
+      const design = designSel ? designSel.getAttribute('data-design') : null;
+
+      addToCart(product.id, size, qty, { color, design });
+      alert(`${product.name} (${size || 'Default'}) x${qty} added to cart`);
+      // update cart count display if present
+      const saved = localStorage.getItem('zhan_cart');
+      const c = saved ? JSON.parse(saved) : [];
+      const el = document.getElementById('cartCount'); if (el) el.textContent = c.reduce((s,i)=>s+i.qty,0);
+    });
+
+    // buy now -> go to checkout with single item added
+    document.getElementById('btnBuyNow').addEventListener('click', (e) => {
+      e.preventDefault();
+      const qty = Number(document.getElementById('productQty').value) || 1;
+      const sizeSel = document.getElementById('detailSize');
+      const size = sizeSel ? sizeSel.value : null;
+      // read color/design selections if any
+      const colorContainer2 = document.querySelector(`.color-swatches[data-id="${product.id}"]`);
+      const designContainer2 = document.querySelector(`.design-pills[data-id="${product.id}"]`);
+      const colorSel2 = colorContainer2 ? colorContainer2.querySelector('.color-swatch.selected') : null;
+      const designSel2 = designContainer2 ? designContainer2.querySelector('.design-pill.selected') : null;
+      const color2 = colorSel2 ? colorSel2.getAttribute('data-color') : null;
+      const design2 = designSel2 ? designSel2.getAttribute('data-design') : null;
+      addToCart(product.id, size, qty, { color: color2, design: design2 });
+      // navigate to checkout page
+      window.location.href = 'index.html#checkout';
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

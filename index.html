@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ZHAN - Premium Clothing Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Leaflet Map Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <div class="brand-logo-inner">Z</div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">ZHAN</div>
+          <div class="brand-tagline">Premium Online Wardrobe</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-link" data-page="home">Home</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Shop</div>
+        <div class="nav-link" onclick="window.location.href='about.html'">About</div>
+        <div class="nav-link" data-page="checkout">Checkout</div>
+
+        <button class="cart-button" id="openCartBtn">
+          <span>Cart</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Cart drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div class="cart-title">Your Cart</div>
+      <button class="cart-close" id="closeCartBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary">
+      <div class="cart-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">SAR 0.00</span>
+      </div>
+      <div class="cart-row">
+        <span>Shipping</span>
+        <span>SAR 15.00</span>
+      </div>
+      <div class="cart-row cart-total">
+        <span>Total</span>
+        <span id="cartTotal">SAR 15.00</span>
+      </div>
+      <button class="btn-checkout" id="goToCheckoutBtn">Go to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Main pages -->
+  <main>
+    <!-- Home / Shop page -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-text">
+          <h1>
+            Dress your day with
+            <span class="hero-highlight">ZHAN</span>
+          </h1>
+          <p class="hero-sub">
+            Fluffy, premium, and joyful outfits for every mood. Curated styles that feel like your favorite playlist.
+          </p>
+          <div class="hero-badges">
+            <span class="badge">Same-day dispatch in KSA</span>
+            <span class="badge">Cash on delivery available</span>
+            <span class="badge">New drops every week</span>
+          </div>
+          <div class="hero-cta">
+            <button class="btn-primary" data-scroll="products">Start shopping</button>
+            <button class="btn-ghost" data-page="checkout">Quick checkout</button>
+          </div>
+          <div class="hero-meta">
+            Loved by students, creators, and cozy souls across Saudi Arabia.
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div class="hero-pill">Today’s vibe · Soft streetwear</div>
+              <div style="font-size:12px;opacity:0.8;font-weight:500;">ZHAN Studio</div>
+            </div>
+            <div class="hero-model">
+              <div class="hero-model-avatar">Z</div>
+              <div class="hero-model-info">
+                <div style="font-size:15px;font-weight:600;">ZHAN Essentials Hoodie</div>
+                <span style="font-size:13px;">Cloud beige · Unisex · Oversized</span>
+              </div>
+            </div>
+            <div style="margin-top:14px;font-size:12px;opacity:0.9;">
+              “Feels like wearing a soft cloud. Perfect for late-night coding, coffee runs, and airport vibes.”
+            </div>
+            <div class="hero-floating-card">
+              <strong style="font-size:11px;display:block;margin-bottom:2px;">Weekend Bundle</strong>
+              <div style="font-size:10px;margin-bottom:3px;line-height:1.2;">Hoodie + Jogger + Tee</div>
+              <span style="font-size:9px;color:#6b7280;line-height:1.2;">From SAR 249 · Limited stock</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="productsSection">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Featured outfits</div>
+            <div class="section-sub">Tap to add to your cart. More collections coming soon.</div>
+          </div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+          <!-- Products injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout page -->
+    <section class="page" id="page-checkout">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Checkout</div>
+          <div class="section-sub">Fill your details and confirm your order.</div>
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Address & map -->
+        <div class="card">
+          <div class="card-title">Delivery details</div>
+          <div class="card-sub">We currently deliver across Saudi Arabia. Please share accurate address and location.</div>
+
+          <form id="checkoutForm">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="fullName">Full name</label>
+                <input type="text" id="fullName" required placeholder="Your name" />
+              </div>
+              <div class="form-field">
+                <label for="phone">Phone number</label>
+                <input type="tel" id="phone" required placeholder="05XXXXXXXX" />
+              </div>
+              <div class="form-field">
+                <label for="city">City</label>
+                <input type="text" id="city" required placeholder="e.g. Dammam" />
+              </div>
+              <div class="form-field">
+                <label for="area">Area / District</label>
+                <input type="text" id="area" required placeholder="Your area" />
+              </div>
+            </div>
+
+            <div class="form-field" style="margin-top:10px;">
+              <label for="address">Building / Street / Flat details</label>
+              <textarea id="address" required placeholder="Building name, street, flat/villa number"></textarea>
+            </div>
+
+            <div class="form-field" style="margin-top:10px;">
+              <label>Choose your location on map</label>
+              <div id="mapContainer" class="map-container" style="height: 280px; margin-bottom: 10px;"></div>
+              <div class="map-note">
+                Click on the map to select your delivery location. Selected coordinates will appear below.
+              </div>
+              <div class="form-field" style="margin-top: 10px;">
+                <label>Selected Location</label>
+                <div class="selected-location">
+                  <div><strong>Latitude:</strong> <span id="selectedLat">Click on map to select</span></div>
+                  <div><strong>Longitude:</strong> <span id="selectedLng">Click on map to select</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field" style="margin-top:10px;">
+              <label for="notes">Delivery notes (optional)</label>
+              <textarea id="notes" placeholder="Landmark, gate code, preferred time, etc."></textarea>
+            </div>
+
+            <div class="form-field" style="margin-top:14px;">
+              <label>Payment method</label>
+              <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+                <label style="display:flex;gap:8px;align-items:center;"><input type="radio" name="payment" value="cod" id="payment_cod" checked> Cash on delivery</label>
+                <label style="display:flex;gap:8px;align-items:center;"><input type="radio" name="payment" value="card" id="payment_card"> Card</label>
+                <label style="display:flex;gap:8px;align-items:center;"><input type="radio" name="payment" value="bank" id="payment_bank"> Bank transfer</label>
+              </div>
+            </div>
+
+            <div id="cardDetails" style="display:none;margin-top:10px;">
+              <div class="form-field">
+                <label for="cardName">Name on card</label>
+                <input type="text" id="cardName" placeholder="Full name on card" />
+              </div>
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="cardNumber">Card number</label>
+                  <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" />
+                </div>
+                <div class="form-field">
+                  <label for="cardExpiry">Expiry (MM/YY)</label>
+                  <input type="text" id="cardExpiry" placeholder="MM/YY" />
+                </div>
+                <div class="form-field">
+                  <label for="cardCvv">CVV</label>
+                  <input type="text" id="cardCvv" placeholder="123" />
+                </div>
+              </div>
+            </div>
+
+            <div id="bankDetails" style="display:none;margin-top:10px; background: linear-gradient(180deg,#fff,#fdf7f5); padding:12px; border-radius:10px; border:1px solid rgba(148,163,184,0.08);">
+              <div style="font-weight:700;margin-bottom:8px;">Bank Transfer Instructions</div>
+              <div style="font-size:13px;color:var(--text-soft); margin-bottom:8px;">Please transfer the total amount to the following account and upload the transfer reference in the next step. We will confirm receipt before dispatch.</div>
+              <div style="display:flex;gap:10px;flex-direction:column;">
+                <div><strong>Bank:</strong> Al Rajhi Bank</div>
+                <div><strong>Account Name:</strong> ZHAN Trading</div>
+                <div><strong>IBAN:</strong> SA12 3456 7890 1234 5678 9012</div>
+                <div><strong>Reference:</strong> your phone number</div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Order summary -->
+        <div class="card">
+          <div class="card-title">Order summary</div>
+          <div class="card-sub">Review your items before placing the order.</div>
+
+          <div class="order-summary-list" id="orderSummaryList">
+            <!-- Items injected by JS -->
+          </div>
+
+          <div class="order-total">
+            <span>Total (incl. shipping)</span>
+            <span id="orderTotal">SAR 0.00</span>
+          </div>
+
+          <button class="btn-place" id="placeOrderBtn">Place order</button>
+          <div class="success-message" id="successMessage">
+            Thank you! Your order has been placed. We will contact you on WhatsApp / phone to confirm.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> ZHAN · Premium Online Wardrobe · Built with love.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

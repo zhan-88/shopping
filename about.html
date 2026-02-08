@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>About ZHAN - Premium Clothing Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <div class="brand-logo-inner">Z</div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">ZHAN</div>
+          <div class="brand-tagline">Premium Online Wardrobe</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-link" onclick="window.location.href='index.html'">Home</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Shop</div>
+        <div class="nav-link" onclick="window.location.href='about.html'" style="color: var(--accent);">About</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Checkout</div>
+
+        <button class="cart-button" id="openCartBtn">
+          <span>Cart</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Cart drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div class="cart-title">Your Cart</div>
+      <button class="cart-close" id="closeCartBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary">
+      <div class="cart-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">SAR 0.00</span>
+      </div>
+      <div class="cart-row">
+        <span>Shipping</span>
+        <span>SAR 15.00</span>
+      </div>
+      <div class="cart-row cart-total">
+        <span>Total</span>
+        <span id="cartTotal">SAR 15.00</span>
+      </div>
+      <button class="btn-checkout" id="goToCheckoutBtn">Go to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="about-page">
+    <!-- About Hero -->
+    <section class="about-hero">
+      <div class="container">
+        <h1 class="about-title">About ZHAN</h1>
+        <p class="about-subtitle">Crafting premium comfort for every mood, every moment, every you.</p>
+      </div>
+    </section>
+
+    <!-- Our Story -->
+    <section class="about-section">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2>Our Story</h2>
+            <p>
+              ZHAN was born from a simple idea: everyone deserves to feel cozy, confident, and stylish every single day. 
+              What started as a passion project has grown into a beloved community of students, creators, and cozy souls 
+              across Saudi Arabia.
+            </p>
+            <p>
+              We believe that fashion should feel effortless. That's why every piece in our collection is carefully curated 
+              with premium fabrics, thoughtful designs, and that perfect balance between comfort and style.
+            </p>
+          </div>
+          <div class="about-image-box">
+            <div class="placeholder-image">
+              <span style="font-size: 48px; color: var(--accent);">✨</span>
+              <p>Premium Clothing Story</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="about-section alt-bg">
+      <div class="container">
+        <h2 class="section-title">Our Values</h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon">🎨</div>
+            <h3>Quality First</h3>
+            <p>We source only the finest materials and partner with skilled manufacturers to ensure every piece meets our high standards.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">💚</div>
+            <h3>Sustainability</h3>
+            <p>We're committed to responsible fashion practices that care for our planet and the communities we work with.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🚀</div>
+            <h3>Innovation</h3>
+            <p>Fresh drops every week with trendy styles that keep you ahead of the curve and feeling your best.</p>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">❤️</div>
+            <h3>Community</h3>
+            <p>ZHAN is more than a brand—it's a community of individuals who celebrate uniqueness and self-expression.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose ZHAN -->
+    <section class="about-section">
+      <div class="container">
+        <h2 class="section-title">Why Choose ZHAN?</h2>
+        <div class="features-list">
+          <div class="feature-item">
+            <span class="feature-check">✓</span>
+            <div>
+              <h4>Same-Day Dispatch in KSA</h4>
+              <p>Order before 2 PM and get your items shipped the same day</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-check">✓</span>
+            <div>
+              <h4>Cash on Delivery Available</h4>
+              <p>Shop worry-free with flexible payment options</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-check">✓</span>
+            <div>
+              <h4>Premium Quality</h4>
+              <p>Handpicked fabrics and meticulous craftsmanship</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-check">✓</span>
+            <div>
+              <h4>New Drops Every Week</h4>
+              <p>Fresh styles constantly added to keep your wardrobe updated</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-check">✓</span>
+            <div>
+              <h4>Customer-Centric Support</h4>
+              <p>We're here to help with any questions or concerns</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="about-section alt-bg">
+      <div class="container cta-section">
+        <h2>Ready to Find Your Vibe?</h2>
+        <p>Explore our latest collection and discover pieces that make you feel amazing.</p>
+        <button class="btn-primary" onclick="window.location.href='index.html'">Start Shopping</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>ZHAN</h4>
+          <p>Premium Online Wardrobe</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Shop</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Returns</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 ZHAN. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Initialize cart for about page
+    function initializeCart() {
+      const savedCart = localStorage.getItem("zhan_cart");
+      if (savedCart) {
+        try {
+          const cart = JSON.parse(savedCart);
+          document.getElementById("cartCount").textContent = cart.length;
+        } catch (e) {
+          document.getElementById("cartCount").textContent = "0";
+        }
+      }
+    }
+
+    // Cart drawer functionality
+    document.getElementById("openCartBtn").addEventListener("click", function() {
+      document.getElementById("cartDrawer").classList.add("open");
+    });
+
+    document.getElementById("closeCartBtn").addEventListener("click", function() {
+      document.getElementById("cartDrawer").classList.remove("open");
+    });
+
+    document.getElementById("goToCheckoutBtn").addEventListener("click", function() {
+      window.location.href = "index.html";
+    });
+
+    initializeCart();
+  </script>
+</body>
+</html>

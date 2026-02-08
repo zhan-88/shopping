@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shop by Category - ZHAN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <div class="brand-logo-inner">Z</div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">ZHAN</div>
+          <div class="brand-tagline">Premium Online Wardrobe</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-link" onclick="window.location.href='index.html'">Home</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Shop</div>
+        <div class="nav-link" onclick="window.location.href='about.html'">About</div>
+        <div class="nav-link" onclick="window.location.href='index.html'">Checkout</div>
+
+        <button class="cart-button" id="openCartBtn">
+          <span>Cart</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Cart drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div class="cart-title">Your Cart</div>
+      <button class="cart-close" id="closeCartBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary">
+      <div class="cart-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">SAR 0.00</span>
+      </div>
+      <div class="cart-row">
+        <span>Shipping</span>
+        <span>SAR 15.00</span>
+      </div>
+      <div class="cart-row cart-total">
+        <span>Total</span>
+        <span id="cartTotal">SAR 15.00</span>
+      </div>
+      <button class="btn-checkout" id="goToCheckoutBtn">Go to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main>
+    <!-- Category Header -->
+    <section class="category-header">
+      <div class="category-header-content">
+        <h1 id="categoryTitle">Category</h1>
+        <p id="categoryDesc">Explore our curated collection</p>
+      </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="page" style="padding: 60px 18px;">
+      <div class="page-content">
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>ZHAN</h4>
+          <p>Premium Online Wardrobe</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Shop</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Returns</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> ZHAN. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Get category from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('cat') || 'All';
+
+    // Category titles and descriptions
+    const categoryInfo = {
+      'Hoodies': { title: 'Hoodies', desc: 'Cozy and stylish hoodies for every season' },
+      'T-Shirts': { title: 'T-Shirts', desc: 'Essential tees that fit your lifestyle' },
+      'Bottoms': { title: 'Bottoms', desc: 'Comfortable and fashionable bottoms' },
+      'Denim': { title: 'Denim', desc: 'Timeless denim pieces for everyone' },
+      'Sets': { title: 'Sets', desc: 'Complete looks with matching sets' }
+    };
+
+    // Update header
+    const info = categoryInfo[category] || { title: category, desc: 'Explore our collection' };
+    document.getElementById('categoryTitle').textContent = info.title;
+    document.getElementById('categoryDesc').textContent = info.desc;
+
+    // Filter and display products
+    const categoryProducts = category ? products.filter(p => p.category === category) : products;
+    const productGrid = document.getElementById('productGrid');
+
+    function renderCategoryProducts() {
+      productGrid.innerHTML = '';
+      
+      if (categoryProducts.length === 0) {
+        productGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-soft);">No products found in this category</div>';
+        return;
+      }
+
+      categoryProducts.forEach((p) => {
+        const discountPercent = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+        productGrid.innerHTML += `
+          <div class="product-card">
+            <div class="product-badge">${p.tag}</div>
+                <div class="product-preview">
+                    <img class="product-avatar product-thumb" src="${p.image}" alt="${p.name}" data-id="${p.id}">
+                  </div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-description">${p.description}</div>
+              ${Array.isArray(p.sizes) && p.sizes.length ? `
+                <div class="size-pills" data-id="${p.id}">
+                  ${p.sizes.map(s => `<button type="button" class="size-pill" data-id="${p.id}" data-size="${s}">${s}</button>`).join("")}
+                </div>
+              ` : ''}
+              <div class="product-price">
+                <span class="price-current">${formatSAR(p.price)}</span>
+                <span class="price-old">${formatSAR(p.oldPrice)}</span>
+                <span class="price-discount">-${discountPercent}%</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+                <a class="btn-view" href="product.html?id=${p.id}">View</a>
+                <button class="btn-add-cart" onclick="addToCartWithSelect(${p.id})">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Initialize
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderCategoryProducts();
+    // attach pill handlers after initial render
+    attachCategoryPillHandlers();
+    // attach gallery handlers for thumbnails
+    function attachCategoryGalleryHandlers() {
+      document.querySelectorAll('.product-thumb').forEach(img => {
+        img.addEventListener('click', () => {
+          const id = Number(img.getAttribute('data-id'));
+          try { window.currentGallery = categoryProducts.map(p => p.id); } catch (e) { window.currentGallery = products.map(p => p.id); }
+          if (typeof openLightboxById === 'function') openLightboxById(id);
+        });
+      });
+    }
+    attachCategoryGalleryHandlers();
+
+    // Update cart display
+    function updateCartCount() {
+      const savedCart = localStorage.getItem('zhan_cart');
+      if (savedCart) {
+        try {
+          const cart = JSON.parse(savedCart);
+          document.getElementById('cartCount').textContent = cart.length;
+        } catch (e) {
+          document.getElementById('cartCount').textContent = '0';
+        }
+      }
+    }
+
+    // Add to cart function (uses pill selection)
+    function addToCartWithSelect(productId) {
+      const sel = document.querySelector(`.size-pill.selected[data-id="${productId}"]`);
+      const size = sel ? sel.getAttribute('data-size') : null;
+      addToCart(productId, size);
+      updateCartCount();
+      const prod = products.find(p => p.id === productId);
+      alert(`${prod.name} (${size || 'Default'}) added to cart!`);
+    }
+
+    // attach pill handlers for category page after render
+    function attachCategoryPillHandlers() {
+      document.querySelectorAll('.size-pills').forEach(container => {
+        container.querySelectorAll('.size-pill').forEach(btn => {
+          btn.addEventListener('click', () => {
+            container.querySelectorAll('.size-pill').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+          });
+        });
+      });
+    }
+
+    // Local wrapper (legacy) - keep compatibility if other scripts call addToCart
+    function addToCart(productId, size, opts) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      let cart = [];
+      const savedCart = localStorage.getItem('zhan_cart');
+      if (savedCart) {
+        try {
+          cart = JSON.parse(savedCart);
+        } catch (e) {
+          cart = [];
+        }
+      }
+
+      // find existing by id + size
+      const existingItem = cart.find(item => item.id === productId && (item.size || null) === (size || null) && (item.color || null) === ((opts && opts.color) || null) && (item.design || null) === ((opts && opts.design) || null));
+      if (existingItem) {
+        existingItem.qty += 1;
+      } else {
+        const entry = { id: product.id, name: product.name, price: product.price, oldPrice: product.oldPrice, category: product.category, qty: 1, size: size || null, color: (opts && opts.color) || null, design: (opts && opts.design) || null };
+        cart.push(entry);
+      }
+
+      localStorage.setItem('zhan_cart', JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    // Cart functionality
+    document.getElementById('openCartBtn').addEventListener('click', function() {
+      document.getElementById('cartDrawer').classList.add('open');
+      renderCartItems();
+    });
+
+    document.getElementById('closeCartBtn').addEventListener('click', function() {
+      document.getElementById('cartDrawer').classList.remove('open');
+    });
+
+    document.getElementById('goToCheckoutBtn').addEventListener('click', function() {
+      window.location.href = 'index.html#checkout';
+    });
+
+    function renderCartItems() {
+      const savedCart = localStorage.getItem('zhan_cart');
+      const cart = savedCart ? JSON.parse(savedCart) : [];
+      const cartItemsContainer = document.getElementById('cartItems');
+      
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-soft);">Your cart is empty</div>';
+        return;
+      }
+
+      let html = '';
+      cart.forEach(item => {
+        html += `
+            <div class="cart-item">
+              <div class="cart-item-info">
+                <div class="cart-thumb">${item.category}</div>
+                <div style="flex:1;">
+                  <div class="cart-item-name">${item.name}${item.size ? ' ('+item.size+')' : ''}</div>
+                  <span>${formatSAR(item.price)} · ${item.category}</span>
+                </div>
+              </div>
+              <div class="cart-item-controls">
+                <button class="qty-btn" onclick="updateQty(${item.id}, '${item.size || ''}', -1)">−</button>
+                <span class="qty-display">${item.qty}</span>
+                <button class="qty-btn" onclick="updateQty(${item.id}, '${item.size || ''}', 1)">+</button>
+                <button class="btn-remove" onclick="removeFromCart(${item.id}, '${item.size || ''}')">Remove</button>
+              </div>
+            </div>
+          `;
+      });
+      cartItemsContainer.innerHTML = html;
+      updateCartSummary();
+    }
+
+    function updateCartSummary() {
+      const savedCart = localStorage.getItem('zhan_cart');
+      const cart = savedCart ? JSON.parse(savedCart) : [];
+      
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const shipping = cart.length > 0 ? 15 : 0;
+      const total = subtotal + shipping;
+      
+      document.getElementById('cartSubtotal').textContent = formatSAR(subtotal);
+      document.getElementById('cartTotal').textContent = formatSAR(total);
+    }
+
+    function updateQty(productId, size, change) {
+      let cart = [];
+      const savedCart = localStorage.getItem('zhan_cart');
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+      }
+
+      const item = cart.find(item => item.id === productId && (item.size || '') === (size || ''));
+      if (item) {
+        item.qty += change;
+        if (item.qty <= 0) {
+          cart = cart.filter(item => !(item.id === productId && (item.size || '') === (size || '')));
+        }
+        localStorage.setItem('zhan_cart', JSON.stringify(cart));
+        updateCartCount();
+        renderCartItems();
+      }
+    }
+
+    function removeFromCart(productId, size) {
+      let cart = [];
+      const savedCart = localStorage.getItem('zhan_cart');
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+      }
+
+      cart = cart.filter(item => !(item.id === productId && (item.size || '') === (size || '')));
+      localStorage.setItem('zhan_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function formatSAR(amount) {
+      return `SAR ${amount.toFixed(2)}`;
+    }
+
+    // Initialize cart display
+    updateCartCount();
+  </script>
+</body>
+</html>
